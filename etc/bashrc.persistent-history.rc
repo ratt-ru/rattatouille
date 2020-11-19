@@ -1,3 +1,6 @@
+# Sets up a persistent history file from all shells.
+# Based on original suggestion by Eli Bendersky (https://eli.thegreenplace.net/2013/06/11/keeping-persistent-history-in-bash),
+# but also adds a local (i.e. per-directory) persistent history.
 
 log_bash_persistent_history()
 {
@@ -23,11 +26,15 @@ PROMPT_COMMAND="run_on_prompt_command"
 
 export HISTTIMEFORMAT="%F %T  "
 
+# aliases to grep the global persistent history, local p/h, and normal bash history
 alias gphgrep='cat ~/.persistent_history|grep --color'
 alias phgrep='cat .persistent_history|grep --color'
 alias hgrep='history|grep --color'
 
-alias gphfzf='cat ~/.persistent_history|fzf'
-alias phfzf='cat .persistent_history|fzf'
-alias hfzf='history|fzf'
+# aliases to run fuzzy finder on global p/h, local p/h, and normal bash history
+if [ "`which fzf`" != "" ]; then
+  alias gphfzf='cat ~/.persistent_history|fzf'
+  alias phfzf='cat .persistent_history|fzf'
+  alias hfzf='history|fzf'
+fi
 
