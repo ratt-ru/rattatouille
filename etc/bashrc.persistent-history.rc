@@ -27,8 +27,8 @@ PROMPT_COMMAND="run_on_prompt_command"
 export HISTTIMEFORMAT="%F %T  "
 
 # aliases to grep the global persistent history, local p/h, and normal bash history
-alias gphgrep='cat ~/.persistent_history|grep --color'
-alias phgrep='cat .persistent_history|grep --color'
+alias gphgrep='cat ~/.persistent_history|egrep -v " \\| g?phgrep "|grep --color'
+alias phgrep='cat .persistent_history|egrep -v " \\| g?phgrep "|grep --color'
 alias hgrep='history|grep --color'
 
 # aliases to run fuzzy finder on global p/h, local p/h, and normal bash history
