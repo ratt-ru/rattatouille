@@ -2,6 +2,8 @@
 # Based on original suggestion by Eli Bendersky (https://eli.thegreenplace.net/2013/06/11/keeping-persistent-history-in-bash),
 # but also adds a local (i.e. per-directory) persistent history.
 
+_PH_FILE=.persistent_history
+
 log_bash_persistent_history()
 {
   [[
@@ -10,8 +12,9 @@ log_bash_persistent_history()
   local date_part="${BASH_REMATCH[1]}"
   local command_part="${BASH_REMATCH[2]}"
   if [ "$command_part" != "$PERSISTENT_HISTORY_LAST" ]; then
-    echo $date_part "|" "$command_part" >> ~/.persistent_history
-    [[ ! ~/.persistent_history -ef .persistent_history ]] && echo $date_part "|" "$command_part" >> .persistent_history
+    # check that ph file is writable, OR doesn't exist and . is writable
+    [[ -w $_PH_FILE || (! -e $_PH_FILE && -w .) ]] && echo $date_part "|" "$command_part" >> $_PH_FILE
+    [[ ! ~/$_PH_FILE -ef $_PH_FILE ]] && echo $date_part "|" `pwd` "|" "$command_part" >> ~/$_PH_FILE
     export PERSISTENT_HISTORY_LAST="$command_part"
   fi
 }
@@ -27,14 +30,14 @@ PROMPT_COMMAND="run_on_prompt_command"
 export HISTTIMEFORMAT="%F %T  "
 
 # aliases to grep the global persistent history, local p/h, and normal bash history
-alias gphgrep='cat ~/.persistent_history|egrep -v " \\| g?phgrep "|grep --color'
-alias phgrep='cat .persistent_history|egrep -v " \\| g?phgrep "|grep --color'
+alias gphgrep='cat ~/$_PH_FILE|egrep -v " \\| g?phgrep "|grep --color'
+alias phgrep='cat $_PH_FILE|egrep -v " \\| g?phgrep "|grep --color'
 alias hgrep='history|grep --color'
 
 # aliases to run fuzzy finder on global p/h, local p/h, and normal bash history
 if [ "`which fzf`" != "" ]; then
-  alias gphfzf='cat ~/.persistent_history|fzf'
-  alias phfzf='cat .persistent_history|fzf'
+  alias gphfzf='cat ~/$_PH_FILE|fzf'
+  alias phfzf='cat $_PH_FILE|fzf'
   alias hfzf='history|fzf'
 fi
 
