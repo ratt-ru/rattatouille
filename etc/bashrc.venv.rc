@@ -1,8 +1,28 @@
 venv()
 {
-  if [ "$1" == "" ]; then
-    ls -l $HOME/.venv
+  # parse args
+  arg="${1#-}"
+  if [ "$arg" != "$1" ]; then
+    shift
   else
-    source $HOME/.venv/$1/bin/activate
+    arg=""
+  fi
+  name=$1
+  
+  if [ "$name" == "" ]; then
+    echo "### list of ~/.venv follows. Use 'venv [-3|-2|-pythonX.Y] name' to create a new virtualenv."
+    ls -l $HOME/.venv
+    return
+  fi
+
+  if [ "$arg" != "" ]; then
+    if [ "${arg#[0-9]}" != "$arg" ]; then
+      arg="python$arg"
+    fi
+    echo "### creating -p $arg $HOME/.venv/$name"
+    virtualenv -p $arg $HOME/.venv/$name
+  else
+    echo "### activating $HOME/.venv/$name"
+    source $HOME/.venv/$name/bin/activate
   fi
 }
