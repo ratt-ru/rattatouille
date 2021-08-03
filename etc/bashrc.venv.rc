@@ -19,7 +19,7 @@ venv()
     if [ "${arg#[0-9]}" != "$arg" ]; then
       arg="python$arg"
     fi
-    echo "### creating -p $arg $HOME/.venv/$name"
+    echo "### creating as: virtualenv -p -$arg $HOME/.venv/$name"
     virtualenv -p $arg $HOME/.venv/$name
   else
     echo "### activating $HOME/.venv/$name"
