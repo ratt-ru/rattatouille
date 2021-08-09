@@ -1,0 +1,3 @@
+# needed for DDFacet affective parallelization
+export OPENBLAS_NUM_THREADS=1
+export OPENBLAS_MAX_THREADS=1
